@@ -1,0 +1,5 @@
+.stack-work/
+*~
+Examples/
+.DS_Store
+*.lock

@@ -1,0 +1,16 @@
+#
+# Agu composition demo:
+r1:b,c->a,0
+r2:e->b,0
+r3:f->c,0
+r4:g,h->e,0
+r5:i->e,0
+r6:->f,0
+r7:->g,0
+r8:j->h,0
+r9:k->i,0
+r10:->j,0
+r11:l->k,0
+r12:->k,0
+r13:m->l,0
+r14:->m,0

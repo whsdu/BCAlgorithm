@@ -1,0 +1,28 @@
+# Trival
+# No defender, No Ordinary Premise(Firm)
+# No Equifinal Path
+# Test cases:
+# 1. Query p1 (WL + dem) will return Nothing
+# 2. Query p1 (WL + eli) A1 + A2
+####
+# Argument A1
+#
+r1:p2,p3->p1,1
+r2:p4,p5=>p2,2
+r3:p6,p7=>p3,2
+r4:->p4,2
+r5:->p5,2
+r6:->p6,2
+r7:->p7,2
+####------------------------------
+# Argument A2 rebut A1 on p2
+# Weakest Link + Firm
+# Eli --> attack fail
+# Dem --> attack succ : r10 >= r2,r3
+#
+r8:p8,p9->!p2,2
+r9:p10=>p8,1
+r10:p11=>p9,2
+r11:->p10,1
+r12:->p11,2
+####------------------------------

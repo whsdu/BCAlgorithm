@@ -1,0 +1,91 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 1d17db21b64c10158f206d76f0137231dd3a12f4b53da13a6f1ba11ea74bbfda
+
+name:           DT
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/DT#readme>
+homepage:       https://github.com/githubuser/DT#readme
+bug-reports:    https://github.com/githubuser/DT/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/DT
+
+library
+  exposed-modules:
+      Algorithm.Argument
+      Algorithm.BC
+      Arena
+      Arena.AttackGraph1
+      Arena.Graph1
+      Arena.Graph2
+      Arena.Graph3
+      Arena.Graph4
+      Arena.GraphSimpleDemo
+      Env
+      GRI.GRI
+      Lib
+      Parser.FileParser
+      Space.Argumentation
+      Space.Dung
+      Space.Language
+      Space.Meta
+      Utility.Argumentation
+      Utility.DemoHelp
+      Utility.Language
+      Utility.Ordering
+      Utility.Path
+      Utility.Paths
+      Utility.Query
+  other-modules:
+      Paths_DT
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , mtl
+    , split
+    , text
+    , transformers
+    , unordered-containers
+  default-language: Haskell2010
+
+executable DT-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_DT
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      DT
+    , base >=4.7 && <5
+  default-language: Haskell2010
+
+test-suite DT-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_DT
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      DT
+    , base >=4.7 && <5
+  default-language: Haskell2010

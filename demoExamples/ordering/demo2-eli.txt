@@ -1,0 +1,29 @@
+head# Trival
+# No defender, No Defeasible Rule(Strict), No Axiom
+# No Equifinal Path
+# Test cases:
+# 1. Query p1 (WL + dem) will return Nothing
+# 2. Query p1 (WL + eli)  will return Nothing
+# 3. Query !p2 (WL + eli) will return A2 and P2(sub argument of A1)
+####
+# Argument A1
+#
+r1:p2,p3->p1,1
+r2:p4,p5->p2,1
+r3:p6,p7->p3,1
+r4:=>p4,2
+r5:=>p5,8
+r6:=>p6,9
+r7:=>p7,10
+####------------------------------
+# Argument A2 rebut A1 on p2
+# Weakest Link + Strict
+# Eli --> attack succ : r11,r12 >= r4
+# Dem --> attack succ : r11 or r12 >= r4
+#
+r8:p8,p9->!p4,2
+r9:p10->p8,1
+r10:p11->p9,1
+r11:=>p10,2
+r12:=>p11,2
+####------------------------------
