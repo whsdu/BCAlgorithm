@@ -4,13 +4,13 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1d17db21b64c10158f206d76f0137231dd3a12f4b53da13a6f1ba11ea74bbfda
+-- hash: c6d38fc5a396f21112b7e7cc9c53190ea5f7861fba8318f30d2c43178a64e1d4
 
-name:           DT
+name:           BCAlgorithm
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/DT#readme>
-homepage:       https://github.com/githubuser/DT#readme
-bug-reports:    https://github.com/githubuser/DT/issues
+homepage:       https://github.com/BCAlgorithm#readme
+bug-reports:    https://github.com/BCAlgorithm/issues
 author:         Author name here
 maintainer:     example@example.com
 copyright:      2020 Author name here
@@ -23,36 +23,29 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/DT
+  location: https://github.com/BCAlgorithm
 
 library
   exposed-modules:
       Algorithm.Argument
       Algorithm.BC
-      Arena
-      Arena.AttackGraph1
-      Arena.Graph1
-      Arena.Graph2
-      Arena.Graph3
-      Arena.Graph4
-      Arena.GraphSimpleDemo
       Env
+      EnvDef
       GRI.GRI
-      Lib
       Parser.FileParser
-      Space.Argumentation
+      Space.Defeasible
       Space.Dung
       Space.Language
       Space.Meta
-      Utility.Argumentation
+      Utility.Defeasible
       Utility.DemoHelp
+      Utility.DomainModel
       Utility.Language
       Utility.Ordering
       Utility.Path
       Utility.Paths
-      Utility.Query
   other-modules:
-      Paths_DT
+      Paths_BCAlgorithm
   hs-source-dirs:
       src
   build-depends:
@@ -65,27 +58,27 @@ library
     , unordered-containers
   default-language: Haskell2010
 
-executable DT-exe
+executable BCAlgorithm-exe
   main-is: Main.hs
   other-modules:
-      Paths_DT
+      Paths_BCAlgorithm
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      DT
+      BCAlgorithm
     , base >=4.7 && <5
   default-language: Haskell2010
 
-test-suite DT-test
+test-suite BCAlgorithm-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_DT
+      Paths_BCAlgorithm
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      DT
+      BCAlgorithm
     , base >=4.7 && <5
   default-language: Haskell2010

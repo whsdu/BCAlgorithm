@@ -236,4 +236,4 @@ mkEnv lm rdMap knMap=
         strictRule = L.StrictRules [ l | l <- literalList, L.imp l == M.S]
         defeasibleRule = L.DefeasibleRules [ l | l <- literalList, L.imp l == M.D]
         atoms = M.rmdups [ l | l <- concat (L.body <$> literalList) ++ (L.conC <$> literalList), L.imp l == M.N]
-    in Env (atoms ++ L.getStrictRules strictRule ++ L.getDefeasibleRules defeasibleRule) strictRule defeasibleRule [] rdMap knMap weakestEli 
+    in Env (atoms ++ L.getStrictRules strictRule ++ L.getDefeasibleRules defeasibleRule) strictRule defeasibleRule rdMap knMap weakestEli 

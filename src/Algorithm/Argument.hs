@@ -204,13 +204,13 @@ pathExtend path = do
         then pure [path]
     else 
         do 
-    supportRules <- mapM concludeBy bodies 
-    let 
-        parallelPathSection = foldr parallel [[]] supportRules
-        newArgument = do 
-                pathSection <- parallelPathSection
-                pure $ path ++ [pathSection] 
-    pure newArgument
+        supportRules <- mapM concludeBy bodies 
+        let 
+            parallelPathSection = foldr parallel [[]] supportRules
+            newArgument = do 
+                    pathSection <- parallelPathSection
+                    pure $ path ++ [pathSection] 
+        pure newArgument
     where 
         parallel :: [a] -> [[a]] -> [[a]] 
         parallel paths ls = do 

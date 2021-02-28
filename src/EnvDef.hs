@@ -10,11 +10,11 @@
 {-# LANGUAGE RankNTypes #-}
 
 
-module Env where 
+module EnvDef where 
 
 import Control.Monad.Reader 
 
-import Space.Language (Language,Path, StrictRules(..),DefeasibleRules(..), PreferenceMap, RdPrefMap(..), KnwlPrefMap(..)) 
+import Space.Defeasible (Language,Path, StrictRules(..),DefeasibleRules(..), PreferenceMap, RdPrefMap(..), KnwlPrefMap(..)) 
 
 -- | TODOs: 
 -- 1. do we really need to wrap rules as StrictRules and DefeasibleRules respectively. 
