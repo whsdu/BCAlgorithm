@@ -1,16 +1,16 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c6d38fc5a396f21112b7e7cc9c53190ea5f7861fba8318f30d2c43178a64e1d4
+-- hash: 5d1307847f8370693b5db261645486f4256ec76ebf444c3bd1000c5a9e0404e1
 
 name:           BCAlgorithm
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/DT#readme>
-homepage:       https://github.com/BCAlgorithm#readme
-bug-reports:    https://github.com/BCAlgorithm/issues
+description:    Please see the README on GitHub at <https://github.com//BCAlgorithm#readme>
+homepage:       https://github.com/whsdu/BCAlgorithm#readme
+bug-reports:    https://github.com/whsdu/BCAlgorithm/issues
 author:         Author name here
 maintainer:     example@example.com
 copyright:      2020 Author name here
@@ -23,7 +23,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/BCAlgorithm
+  location: https://github.com/whsdu/BCAlgorithm
 
 library
   exposed-modules:
