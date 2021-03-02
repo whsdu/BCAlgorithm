@@ -91,10 +91,10 @@ defeatCheck board@Board{..}=
             then 
                 Right $ selectOneLucker newLucky                            -- note 2
             else 
-                Left $ board{lucky = newLucky,waiting = waiting ++ tmpWaiting}
+                Left $ board{lucky = newLucky,waiting = waiting ++ tmpWaiting, seen=newSeen}
 
 checkDefeater :: SearchRecords -> D.Language  -> (PathRecords,D.Language, SearchRecords)
-checkDefeater = undefined 
+checkDefeater srs seen = undefined 
 
 selectOneLucker :: SearchRecords -> SearchRecord 
 selectOneLucker = undefined 
