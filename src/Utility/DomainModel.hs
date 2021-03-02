@@ -136,41 +136,8 @@ selectionOne = undefined
 - go to step 2 (input new Board)
 -}
 augConstruction :: SearchRecord -> SearchRecords
-augConstruction (p,defeater) = 
-    let 
-        incArgument = pathExtend p 
-    in (,defeater) <$> incArgument
+augConstruction (p,defeater) = undefined
 
-
-pathExtend :: D.Path -> D.Argument 
-pathExtend = undefined 
--- pathExtend :: 
-    -- ( MonadReader env m
-    -- , UseRuleOnly env 
-    -- , MonadIO m 
-    -- ) => L.Path -> m L.EquifinalPaths 
--- pathExtend path = do 
-    -- let 
-        -- rules = last path 
-        -- bodies = concat $ L.body <$> rules 
-    -- if 
-        -- null bodies 
-        -- then pure [path]
-    -- else 
-        -- do 
-        -- supportRules <- mapM concludeBy bodies 
-        -- let 
-            -- parallelPathSection = foldr parallel [[]] supportRules
-            -- newArgument = do 
-                    -- pathSection <- parallelPathSection
-                    -- pure $ path ++ [pathSection] 
-        -- pure newArgument
-    -- where 
-        -- parallel :: [a] -> [[a]] -> [[a]] 
-        -- parallel paths ls = do 
-                -- pa <- paths
-                -- a <- ls 
-                -- pure $  pa:a 
 
 
 {- 5 : Defeater Return 
