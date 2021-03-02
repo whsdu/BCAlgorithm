@@ -23,33 +23,55 @@ type PathRecords = [PathRecord]
 
 data Board = Board {lucky :: SearchRecords , waiting :: PathRecords, futile :: SearchRecords, seen :: D.Language}
 
+query :: D.Argument -> Defeater 
+query incArgu = 
+    let 
+        initBoard = initialBoard incArgu 
+    in chainConstruction initBoard 
+
+chainConstruction :: Board -> Defeater 
+chainConstruction step1Board = 
+    case defeatCheck step1Board of                          -- step 2 : check defeat  : update 'lucky' & 'waiting'
+        Right p -> warranted p                                  -- step 5: return warranted defeater  
+        Left step2Board -> 
+            case pathSelection step2Board of                -- step 3: path selection  : update 'lucky' , set 'base'
+                Just (base,step3Board) -> 
+                    let 
+                        luckyExtend= augConstruction base   -- step 4: new lucky set 
+                        step3Lucky = lucky step3Board
+                        step4Board = step3Board{lucky=step3Lucky++luckyExtend}
+                    in chainConstruction step4Board
+                Nothing -> 
+                    case luckyEmpty step2Board of           -- step 6: update 'waiting' for sure , update 'lucky' (step 9) or 'futile' (step 7)
+                        Right unw -> unw                        -- step 8
+                        Left step6Board -> chainConstruction step6Board
 
 {- 1
--- Given a set of rules (this set of rules concludes to a set of proposition , old equifinal path section)
+-- Intialize a given set of rules (this set of rules concludes to a set of proposition , old equifinal path section) 
+as an incomplete-argument (incArgument). 
         - Initialize these in-complete paths SearchRecord == 'lucky' (each SearchRecord has a Defeater as 'Node[]')
         - Initialize empty PathRecords      [] == 'waiting' 
         - Initialize empty SearchRecords    [] == 'futile'  
 Notes: 
-    1. incPath is of type Path = [Rules,...,Rules] 
-    2. Rules in [Rules,...,Rules] has same set of heads. 
-    3. Each Rules in [Rules,...,Rules] is a head of an incomplete-path.
+    1. incArgu is of type Argument = [Paths,...,Path] 
+    2. Each Path in [Paths,...,Path] is a head of an incomplete-path.
+    3. Path in [Paths,...,Path] are all [Rules], and Rules has same set of heads. 
 
 -}
 -- go to 2 
-initial :: D.Argument -> Board 
-initial incArgu = 
+initialBoard :: D.Argument -> Board 
+initialBoard incArgu = 
     let 
-        luckySet = (\p -> (p,Node[])) <$> incArgu 
+        luckySet = (,Node[]) <$> incArgu 
     in Board luckySet [] [] []
-
-
 
 {- 2
 - Given Board from step 1
-    - Check 'lucky': If any unseen in-defeater found for each path: 
-        - include all newly defeated proposition to seen
-        - Attaches the in-defeater to related Path , move this PathRecord to 'waiting'
-        - If path has old related defeater(much be failed defeater), then remove this old defeater and attach this new in-defeater. 
+    - Check 'lucky': If any unseen inc-defeater found for each path: 
+        - include all newly defeated target to seen
+        - Attaches the inc-defeater to related Path , move this PathRecord to 'waiting'
+        - If path has old related defeater(much be unwarranted defeater), then remove this old defeater and attach this new in-defeater. 
+            - a SearchRecord turns to be a PathRecord
     - Check if any SearchRecord in 'lucky' contains complete Path. 
         - Yes: go to 5 
             - Exit : Pass the complete Path Record to 5 and get return result 
@@ -82,6 +104,8 @@ checkLuckyComplete = undefined
     
 
 
+
+
 {- 3
 - Given Board from step 2
     - If 'lucky' contains more than one SearchRecord, select One (Path selection strategy)
@@ -91,12 +115,15 @@ checkLuckyComplete = undefined
     - If 'lucky' is empty 
         - go to 6 == Nothing 
 -}
-pathSelection :: Board -> Maybe SearchRecord 
-pathSelection Board{..} = case lucky of 
+pathSelection :: Board -> Maybe (SearchRecord, Board)
+pathSelection board@Board{..} = case lucky of 
     [] -> Nothing 
-    _ -> Just $ selectionOne lucky
+    _ -> Just (base, newBoard)
+    where 
+        (base, newlucky) = selectionOne lucky
+        newBoard = board{lucky=newlucky}
 
-selectionOne :: SearchRecords -> SearchRecord 
+selectionOne :: SearchRecords -> (SearchRecord, SearchRecords)
 selectionOne = undefined 
 
 
@@ -109,11 +136,12 @@ selectionOne = undefined
 - get New Board with new 'lucky' from Board in step 3 
 - go to step 2 (input new Board)
 -}
-augConstruction :: SearchRecord -> SearchRecords 
+augConstruction :: SearchRecord -> SearchRecords
 augConstruction (p,defeater) = 
     let 
         incArgument = pathExtend p 
     in (,defeater) <$> incArgument
+
 
 pathExtend :: D.Path -> D.Argument 
 pathExtend = undefined 
@@ -170,19 +198,25 @@ Known 'lucky' is empty  from step 3
     - Construct the defeater and check defeater return, if the Defeaters is UnWarranted. 
         - go to 9 
 -}
-luckyEmpty :: Board -> Defeater 
-luckyEmpty Board{..} = case waiting of 
-    [] -> unwarranted futile 
+luckyEmpty :: Board -> Either Board Defeater 
+luckyEmpty board@Board{..} = case waiting of 
+    [] -> Right $ unwarranted futile 
     _ -> let 
             (p,incArgument) = selectionTwo waiting 
-            result = query inArgument 
-            case tellQuery result of 
-                Warranted -> waitingReduction 
-                Unwarranted -> survived 
+            result = query incArgument 
+         in case tellQuery result of 
+                Warranted -> 
+                    let 
+                        newBoard = waitingToFutile (p,result) (p,incArgument) board
+                    in  luckyEmpty newBoard
+                Unwarranted -> 
+                    let 
+                        newBoard = survived (p,result) (p,incArgument) board
+                    in  Right $ chainConstruction newBoard 
 
--- | TODO: assemble these functions together  as query 
-query :: D.Argument -> Defeater 
-query = undefined 
+
+selectionTwo :: PathRecords -> PathRecord
+selectionTwo = undefined 
 
 tellQuery :: Defeater -> ArgumentStatus 
 tellQuery = undefined 
@@ -194,8 +228,8 @@ In step 6, given the defeater is Warranted. We have a new SearchRecord
         - go back to 6 
 -}
 -- TODO: futile should be [(Path, Defeater)]
-waitingReduction :: SearchRecord -> PathRecord -> Board -> Board 
-waitingReduction = undefined 
+waitingToFutile :: SearchRecord -> PathRecord -> Board -> Board
+waitingToFutile = undefined 
 
 {- 8 
 Given 'lucky' and 'waiting' are all empty.  
@@ -211,5 +245,5 @@ Given that the PathRecord related defeater is unwarranted. We have a new SearchR
     - Return the new SearRecord 
     - go back to 4 (new SearRecord as input)
 -}
-survived ::  PathRecord -> Board -> (Board,SearchRecord)
+survived ::  SearchRecord -> PathRecord -> Board -> Board
 survived = undefined 
