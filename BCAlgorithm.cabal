@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5d1307847f8370693b5db261645486f4256ec76ebf444c3bd1000c5a9e0404e1
+-- hash: 51e49e31ee892df58631c5de4aaedcadf23e47d3e2933f46876e24c6e908e643
 
 name:           BCAlgorithm
 version:        0.1.0.0
@@ -29,6 +29,7 @@ library
   exposed-modules:
       Algorithm.Argument
       Algorithm.BC
+      Algorithm.BCAlgorithm
       Env
       EnvDef
       GRI.GRI
