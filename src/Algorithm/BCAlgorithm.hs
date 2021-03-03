@@ -42,12 +42,12 @@ chainConstruction pm lang step1Board =
             case pathSelection step2Board of                -- step 3: path selection  : update 'lucky' , set 'base'
                 Just (base,step3Board) -> 
                     let 
-                        luckyExtend= augConstruction base   -- step 4: new lucky set 
+                        luckyExtend= augConstruction lang base   -- step 4: new lucky set 
                         step3Lucky = lucky step3Board
                         step4Board = step3Board{lucky=step3Lucky++luckyExtend}
                     in chainConstruction pm lang step4Board
                 Nothing -> 
-                    case luckyEmpty step2Board of           -- step 6: update 'waiting' for sure , update 'lucky' (step 9) or 'futile' (step 7)
+                    case luckyEmpty pm lang step2Board of           -- step 6: update 'waiting' for sure , update 'lucky' (step 9) or 'futile' (step 7)
                         Right unw -> unw                        -- step 8
                         Left step6Board -> chainConstruction pm lang step6Board
 
@@ -61,7 +61,6 @@ Notes:
     1. incArgu is of type Argument = [Paths,...,Path] 
     2. Each Path in [Paths,...,Path] is a head of an incomplete-path.
     3. Path in [Paths,...,Path] are all [Rules], and Rules has same set of heads. 
-
 -}
 -- go to 2 
 initialBoard :: D.Argument -> Board 
@@ -325,112 +324,6 @@ selectUndercutters lang seen p =
         targets = M.neg <$> defeasibleRules
     in [l | l <- lang , l `elem` targets, l `notElem` seen]
 
-
-
--- completeArgument :: 
---     ( MonadReader env m
---     , UseRuleOnly env 
---     , MonadIO m 
---     ) => L.EquifinalPaths  -> m L.EquifinalPaths 
--- completeArgument argument = 
---     if isCompeletArgument argument 
---         then pure argument 
---     else 
---         do 
---             newArgument <- agu argument 
---             completeArgument  newArgument 
-
--- windowE :: 
---     ( MonadReader env m
---     , UseRuleOnly env 
---     , MonadIO m 
---     ) => Int -> L.EquifinalPaths  -> m L.EquifinalPaths 
--- windowE size argument = 
---     if size == 0 || isCompeletArgument argument 
---         then pure argument 
---     else 
---         do 
---             newArgument <- agu argument 
---             windowE (size-1) newArgument 
-
-
-
--- completeArgument :: 
---     ( MonadReader env m
---     , UseRuleOnly env 
---     , MonadIO m 
---     ) => L.EquifinalPaths  -> m L.EquifinalPaths 
--- completeArgument argument = 
---     if isCompeletArgument argument 
---         then pure argument 
---     else 
---         do 
---             newArgument <- agu argument 
---             completeArgument  newArgument 
-
--- windowE :: 
---     ( MonadReader env m
---     , UseRuleOnly env 
---     , MonadIO m 
---     ) => Int -> L.EquifinalPaths  -> m L.EquifinalPaths 
--- windowE size argument = 
---     if size == 0 || isCompeletArgument argument 
---         then pure argument 
---     else 
---         do 
---             newArgument <- agu argument 
---             windowE (size-1) newArgument 
-
--- agu :: 
---     ( MonadReader env m
---     , UseRuleOnly env 
---     , MonadIO m 
---     ) => L.EquifinalPaths  -> m L.EquifinalPaths
--- agu argument = do 
---         arguments <- mapM pathExtend argument 
---         pure $ concat arguments 
-
--- pathExtend :: 
---     ( MonadReader env m
---     , UseRuleOnly env 
---     , MonadIO m 
---     ) => L.Path -> m L.EquifinalPaths 
--- pathExtend path = do 
---     let 
---         rules = last path 
---         bodies = concat $ L.body <$> rules 
---     if 
---         null bodies 
---         then pure [path]
---     else 
---         do 
---         supportRules <- mapM concludeBy bodies 
---         let 
---             parallelPathSection = foldr parallel [[]] supportRules
---             newArgument = do 
---                     pathSection <- parallelPathSection
---                     pure $ path ++ [pathSection] 
---         pure newArgument
---     where 
---         parallel :: [a] -> [[a]] -> [[a]] 
---         parallel paths ls = do 
---                 pa <- paths
---                 a <- ls 
---                 pure $  pa:a 
-
-
-
--- concludeBy :: 
-    -- ( MonadReader env m
-    -- , UseRuleOnly env 
-    -- , MonadIO m 
-    -- ) => L.Literal -> m L.Language 
--- concludeBy l = do 
-    -- dRules <- grab @L.DefeasibleRules
-    -- sRules <- grab @L.StrictRules
-    -- let rules = L.getDefeasibleRules dRules ++ L.getStrictRules sRules
-    -- pure [r | r <- rules , L.conC r == l]
-
 {- 3
 - Given Board from step 2
     - If 'lucky' contains more than one SearchRecord, select One (Path selection strategy)
@@ -449,8 +342,17 @@ pathSelection board@Board{..} = case lucky of
         newBoard = board{lucky=newlucky}
 
 selectionOne :: SearchRecords -> (SearchRecord, SearchRecords)
-selectionOne = undefined 
-
+selectionOne srs =
+    let 
+        sortByLength = sortBy (flip compare `on` (length . fst)) srs 
+        sortByDefeasible = sortBy (flip compare `on` (length . getDef . fst)) srs 
+    in (head sortByDefeasible, tail sortByDefeasible)  
+    where 
+        getDef :: D.Path -> D.Language 
+        getDef p = 
+            let 
+                rules = concat p 
+            in [r | r<-rules, D.imp r == M.D]
 
 {- 4
 - Given SearchRecord selected from step 3, continue construction. 
@@ -461,15 +363,11 @@ selectionOne = undefined
 - get New Board with new 'lucky' from Board in step 3 
 - go to step 2 (input new Board)
 -}
-augConstruction :: SearchRecord -> SearchRecords
-augConstruction (p,defeater) = undefined 
-    -- let 
-    --     incArgument = pathExtend p 
-    -- in (,defeater) <$> incArgument
-
-
--- pathExtend :: D.Path -> D.Argument 
--- pathExtend = undefined 
+augConstruction :: D.Language -> SearchRecord -> SearchRecords
+augConstruction lang (p,defeater) = 
+    let 
+        tmpArg = pathExtend lang p 
+    in (,defeater) <$> tmpArg 
 
 
 {- 5 : Defeater Return 
@@ -496,27 +394,36 @@ Known 'lucky' is empty  from step 3
     - Construct the defeater and check defeater return, if the Defeaters is UnWarranted. 
         - go to 9 
 -}
-luckyEmpty :: Board -> Either Board Defeater 
-luckyEmpty = undefined 
--- luckyEmpty board@Board{..} = case waiting of 
---     [] -> Right $ unwarranted futile 
---     _ -> let 
---             (p,incArgument) = selectionTwo waiting 
---             result = query incArgument 
---          in case tellQuery result of 
---                 Warranted -> 
---                     let 
---                         newBoard = waitingToFutile (p,result) (p,incArgument) board
---                     in  luckyEmpty newBoard
---                 Unwarranted -> 
---                     let 
---                         newBoard = survived (p,result) (p,incArgument) board
---                     in  Right $ chainConstruction newBoard 
+luckyEmpty ::D.PreferenceMap -> D.Language -> Board -> Either Board Defeater 
+luckyEmpty pm lang board@Board{..} = case waiting of 
+    [] -> Right $ unwarranted futile 
+    _ -> let 
+            ((p,incArgument), tmpWaiting) = selectionTwo waiting 
+            result = query pm lang incArgument 
+         in case tellQuery result of 
+                Warranted -> 
+                    let 
+                        newBoard = waitingToFutile (p,result) tmpWaiting board
+                    in  luckyEmpty pm lang newBoard
+                Unwarranted -> 
+                    let 
+                        newBoard = survived (p,result) tmpWaiting board
+                    in  Right $ chainConstruction pm lang newBoard 
 
 
-selectionTwo :: PathRecords -> PathRecord
-selectionTwo = undefined 
-
+selectionTwo :: PathRecords -> (PathRecord, PathRecords)
+selectionTwo prs = 
+    let 
+        sortByLength = sortBy (flip compare `on` (length . fst)) prs  
+        sortByDefeasible = sortBy (flip compare `on` (length . getDef . fst)) prs 
+    in (head sortByDefeasible, tail sortByDefeasible)  
+    where 
+        getDef :: D.Path -> D.Language 
+        getDef p = 
+            let 
+                rules = concat p 
+            in [r | r<-rules, D.imp r == M.D]
+            
 tellQuery :: Defeater -> ArgumentStatus 
 tellQuery = undefined 
 
@@ -527,8 +434,8 @@ In step 6, given the defeater is Warranted. We have a new SearchRecord
         - go back to 6 
 -}
 -- TODO: futile should be [(Path, Defeater)]
-waitingToFutile :: SearchRecord -> PathRecord -> Board -> Board
-waitingToFutile = undefined 
+waitingToFutile :: SearchRecord -> PathRecords -> Board -> Board
+waitingToFutile newFutile newWaiting oldBoard@Board{..} = oldBoard{waiting=newWaiting, futile=newFutile:futile} 
 
 {- 8 
 Given 'lucky' and 'waiting' are all empty.  
@@ -536,7 +443,7 @@ Then all defeater are warranted. In this case
     - convert futile :: [(Path,Defeater)] to Node [(Path,Defeater)]
 -}
 unwarranted :: SearchRecords -> Defeater 
-unwarranted = undefined 
+unwarranted = Node 
 
 {- 9 
 Given that the PathRecord related defeater is unwarranted. We have a new SearchReacord
@@ -544,5 +451,5 @@ Given that the PathRecord related defeater is unwarranted. We have a new SearchR
     - Return the new SearRecord 
     - go back to 4 (new SearRecord as input)
 -}
-survived ::  SearchRecord -> PathRecord -> Board -> Board
-survived = undefined 
+survived ::  SearchRecord -> PathRecords -> Board -> Board
+survived newLuckyer newWaiting board@Board{..}=board {waiting=newWaiting, lucky =newLuckyer:lucky}
