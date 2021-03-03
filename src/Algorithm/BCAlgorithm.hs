@@ -425,7 +425,9 @@ selectionTwo prs =
             in [r | r<-rules, D.imp r == M.D]
             
 tellQuery :: Defeater -> ArgumentStatus 
-tellQuery = undefined 
+tellQuery (SW _) = Warranted
+tellQuery (Node [x]) = Warranted 
+tellQuery (Node _) = Unwarranted
 
 {- 7
 In step 6, given the defeater is Warranted. We have a new SearchRecord  
