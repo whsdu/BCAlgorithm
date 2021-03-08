@@ -53,7 +53,7 @@ type Path = [Language]
 -- A list of Path
 -- 1. Argument 
 -- 2. In complete- argument 
-type Argument = [Path]
+type Argument = [Path] 
 type InArgument = [Path]
 
 -- | LanguageMap is a dictionary used to query Literal with given name

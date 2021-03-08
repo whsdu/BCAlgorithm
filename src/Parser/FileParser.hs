@@ -8,11 +8,11 @@ import  qualified Data.HashMap.Strict  as Map
 import Data.Maybe(fromJust, fromMaybe)
 import Data.Text(isInfixOf,pack)
 
-import qualified Space.Language as L 
+import qualified Space.Defeasible  as L 
     (Literal (..), Language , LanguageMap,StrictRules(..), DefeasibleRules(..), RdPrefMap(..), 
     KnwlPrefMap(..), PreferenceMap, name,body,imp,conC)
 import qualified Space.Meta as M
-import Env ( Env(..))
+import EnvDef
 import Utility.Ordering 
 
 -- | Transitional data type being used to bridge the gap between file and list of Literal. 
@@ -236,4 +236,10 @@ mkEnv lm rdMap knMap=
         strictRule = L.StrictRules [ l | l <- literalList, L.imp l == M.S]
         defeasibleRule = L.DefeasibleRules [ l | l <- literalList, L.imp l == M.D]
         atoms = M.rmdups [ l | l <- concat (L.body <$> literalList) ++ (L.conC <$> literalList), L.imp l == M.N]
-    in Env (atoms ++ L.getStrictRules strictRule ++ L.getDefeasibleRules defeasibleRule) strictRule defeasibleRule rdMap knMap weakestEli 
+    in Env 
+        (atoms ++ L.getStrictRules strictRule ++ L.getDefeasibleRules defeasibleRule) 
+        strictRule 
+        defeasibleRule 
+        rdMap 
+        knMap 
+        weakestEli 

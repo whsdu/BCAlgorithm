@@ -8,12 +8,13 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE QuantifiedConstraints #-}
 
 
 module EnvDef where 
-
-import Control.Monad.Reader 
-
+-- import Space.DefeasibleFrame ( Attack, AttackCheck )
+import Control.Monad.Reader
+    ( MonadIO, asks, MonadReader, ReaderT(..) ) 
 import Space.Defeasible (Language,Path, StrictRules(..),DefeasibleRules(..), PreferenceMap, RdPrefMap(..), KnwlPrefMap(..)) 
 
 -- | TODOs: 
@@ -22,7 +23,7 @@ import Space.Defeasible (Language,Path, StrictRules(..),DefeasibleRules(..), Pre
 -- 3. a new PrefSpace is needed, this should be a function that given to literal and return true if
 -- the first is at least prefer as the snd arg.
 
-data Env = Env 
+data Env =  Env 
     { envLangSpace :: Language 
     , envSRuleSpace :: StrictRules
     , envDRuleSpace :: DefeasibleRules
@@ -39,7 +40,7 @@ instance Show Env where
         "Preferrence Map of defeasible rules: " ++ show (getRdPrefMap $ envRdPrefMap env) ++ "\n" ++ 
         "Preferrence Map of axiom and ordinary knowledge: " ++ show (getKnwlPrefMap $ envKnwlPrefMap env) 
 
-class Has field env where 
+class Has field env  where 
     obtain :: env -> field 
 
 -- | Same type with different purpose should be wrapped respectively 

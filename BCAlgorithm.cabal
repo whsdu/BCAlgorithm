@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.2.
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 51e49e31ee892df58631c5de4aaedcadf23e47d3e2933f46876e24c6e908e643
+-- hash: a6d1dec14a46f6d9d3e852df071327fface746dea6b0d62c9faef97a18e5d86c
 
 name:           BCAlgorithm
 version:        0.1.0.0
@@ -27,24 +27,19 @@ source-repository head
 
 library
   exposed-modules:
-      Algorithm.Argument
-      Algorithm.BC
       Algorithm.BCAlgorithm
-      Env
       EnvDef
-      GRI.GRI
       Parser.FileParser
       Space.Defeasible
+      Space.DefeasibleFrame
+      Space.DefeasibleInstance
       Space.Dung
       Space.Language
       Space.Meta
       Utility.Defeasible
       Utility.DemoHelp
       Utility.DomainModel
-      Utility.Language
       Utility.Ordering
-      Utility.Path
-      Utility.Paths
   other-modules:
       Paths_BCAlgorithm
   hs-source-dirs:

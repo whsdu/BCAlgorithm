@@ -5,9 +5,9 @@
 module Utility.Ordering where 
 
 import qualified Space.Meta as M 
-import qualified Space.Language as L 
+import qualified Space.Defeasible as L 
 
-import Env 
+import EnvDef 
 
 import qualified Data.HashMap.Strict as Map 
 import Control.Monad.Reader (MonadReader)
