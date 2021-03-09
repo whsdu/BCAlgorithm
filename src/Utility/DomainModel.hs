@@ -178,7 +178,7 @@ luckyEmpty board@Board{..} = case waiting of
                 Unwarranted -> 
                     let 
                         newBoard = survived (p,result) (p,incArgument) board
-                    in  Right $ chainConstruction newBoard 
+                    in  Left newBoard 
 
 
 selectionTwo :: PathRecords -> PathRecord
