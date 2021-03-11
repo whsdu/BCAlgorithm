@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a58d83987f5bbe8384dafcbb472631a47d27f5f221762d149298950e43a4af3a
+-- hash: eddbf686ddc9a2728306d4d03dd686dcf68f6c6efe3db4719a7f4a07ebee5635
 
 name:           BCAlgorithm
 version:        0.1.0.0
@@ -33,6 +33,7 @@ library
       Space.Defeasible
       Space.DefeasibleFrame
       Space.DefeasibleInstance
+      Space.DomainModeling
       Space.Dung
       Space.Language
       Space.Meta
